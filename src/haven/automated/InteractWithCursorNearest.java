@@ -21,6 +21,7 @@ public class InteractWithCursorNearest implements Runnable {
     public void run() {
 	gui.map.new Hittest(gui.map.currentCursorLocation) {
 	    protected void hit(Coord pc, Coord2d mc, ClickData inf) {
+		boolean shift_click = false;
 		Gob player = gui.map.player();
 		if (player == null)
 		    return; // player is null, possibly taking a road, don't bother trying to do any of the below
@@ -52,12 +53,22 @@ public class InteractWithCursorNearest implements Runnable {
 			    } catch (NullPointerException ignored) {}
 			    boolean isNonVisitorGate = isSmallGate || isReinforcedGate;
 			    if ((isNonVisitorGate && Utils.getprefb("clickNearestObject_NonVisitorGates", true))
-				|| ((res.name.startsWith("gfx/terobjs/herbs") || InteractWithNearestObject.otherPickableObjects.contains(res.basename())) && Utils.getprefb("clickNearestObject_Forageables", true))
-				|| (Arrays.stream(Config.critterResPaths).anyMatch(res.name::matches) || res.name.matches(".*(rabbit|bunny)$")) && Utils.getprefb("clickNearestObject_Critters", true)
+				|| (((res.name.startsWith("gfx/terobjs/herbs") && !res.name.contains("standinggrass"))
+				|| InteractWithNearestObject.otherPickableObjects.contains(res.basename())) && Utils.getprefb("clickNearestObject_Forageables", true))
+				|| (Arrays.stream(Config.critterResPaths).anyMatch(res.name::matches)
+				|| res.name.matches(".*(rabbit|bunny)$")) && Utils.getprefb("clickNearestObject_Critters", true)
 				|| (InteractWithNearestObject.caves.contains(res.name) && Utils.getprefb("clickNearestObject_Caves", false))
 				|| (InteractWithNearestObject.mines.contains(res.name) && Utils.getprefb("clickNearestObject_MineholesAndLadders", false))) {
-				if (res.name.startsWith("gfx/terobjs/herbs")) FlowerMenu.setNextSelection("Pick"); // ND: Set the flower menu option to "pick" only for these particular ones.
-				gui.map.wdgmsg("click", Coord.z, clickedGob.rc.floor(posres), 3, 0, 0, (int) clickedGob.id, clickedGob.rc.floor(posres), 0, -1);
+				if (res.name.startsWith("gfx/terobjs/herbs") || InteractWithNearestObject.otherPickableObjects.contains(res.basename())) {
+				    shift_click = true; //Cloud: no need to select anything for foragables, shift click works much smoother
+				    //FlowerMenu.setNextSelection("Pick");  ND: Set the flower menu option to "pick" only for these particular ones.
+				}
+				if (shift_click) {
+				    gui.map.wdgmsg("click", Coord.z, clickedGob.rc.floor(posres), 3, 1, 0, (int) clickedGob.id, clickedGob.rc.floor(posres), 0, -1);
+				}
+				else {
+				    gui.map.wdgmsg("click", Coord.z, clickedGob.rc.floor(posres), 3, 0, 0, (int) clickedGob.id, clickedGob.rc.floor(posres), 0, -1);
+				}
 				if (gui.interactWithNearestObjectThread != null) {
 				    gui.interactWithNearestObjectThread.interrupt();
 				    gui.interactWithNearestObjectThread = null;
@@ -90,13 +101,16 @@ public class InteractWithCursorNearest implements Runnable {
 			    }
 			} catch (NullPointerException ignored) {}
 			if ((isGate && Utils.getprefb("clickNearestObject_NonVisitorGates", true))
-			    || ((res.name.startsWith("gfx/terobjs/herbs") || InteractWithNearestObject.otherPickableObjects.contains(res.basename())) && Utils.getprefb("clickNearestObject_Forageables", true))
+			    || (((res.name.startsWith("gfx/terobjs/herbs") && !res.name.contains("standinggrass")) || InteractWithNearestObject.otherPickableObjects.contains(res.basename())) && Utils.getprefb("clickNearestObject_Forageables", true))
 			    || (Arrays.stream(Config.critterResPaths).anyMatch(res.name::matches) || res.name.matches(".*(rabbit|bunny)$")) && Utils.getprefb("clickNearestObject_Critters", true)
 			    || (InteractWithNearestObject.caves.contains(res.name) && Utils.getprefb("clickNearestObject_Caves", false))
 			    || (InteractWithNearestObject.mines.contains(res.name) && Utils.getprefb("clickNearestObject_MineholesAndLadders", false))) {
 			    if (distFromPlayer < maxDistance && (theObject == null || distFromPlayer < theObject.rc.dist(mc))) {
 				theObject = gob;
-				if (res.name.startsWith("gfx/terobjs/herbs")) FlowerMenu.setNextSelection("Pick"); // ND: Set the flower menu option to "pick" only for these particular ones.
+				if (res.name.startsWith("gfx/terobjs/herbs") || InteractWithNearestObject.otherPickableObjects.contains(res.basename())) {
+				    shift_click = true; //Cloud: no need to select anything for foragables, shift click works much smoother
+				    //FlowerMenu.setNextSelection("Pick");  ND: Set the flower menu option to "pick" only for these particular ones.
+				}
 			    }
 			}
 		    }
@@ -129,7 +143,14 @@ public class InteractWithCursorNearest implements Runnable {
 			    gui.interactWithNearestObjectThread = null;
 			}
 		    } catch (Exception ignored) {}
-		} else {
+		} else if (shift_click){
+		    gui.map.wdgmsg("click", Coord.z, theObject.rc.floor(posres), 3, 1, 0, (int) theObject.id, theObject.rc.floor(posres), 0, -1);
+		    if (gui.interactWithNearestObjectThread != null) {
+			gui.interactWithNearestObjectThread.interrupt();
+			gui.interactWithNearestObjectThread = null;
+		    }
+		}
+		else {
 		    gui.map.wdgmsg("click", Coord.z, theObject.rc.floor(posres), 3, 0, 0, (int) theObject.id, theObject.rc.floor(posres), 0, -1);
 		    if (gui.interactWithNearestObjectThread != null) {
 			gui.interactWithNearestObjectThread.interrupt();
