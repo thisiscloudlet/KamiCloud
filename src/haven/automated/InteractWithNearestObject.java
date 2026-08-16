@@ -63,6 +63,7 @@ public class InteractWithNearestObject implements Runnable {
     public void run() {
 	Gob theObject = null;
 	Gob player = gui.map.player();
+	boolean shift_click = false;
 	if (player == null)
 	    return; // player is null, possibly taking a road, don't bother trying to do any of the below
 	Coord2d plc = player.rc;
@@ -94,13 +95,17 @@ public class InteractWithNearestObject implements Runnable {
 		} catch (NullPointerException ignored) {}
 		boolean isNonVisitorGate = isSmallGate || isReinforcedGate;
 		if ((isNonVisitorGate && Utils.getprefb("clickNearestObject_NonVisitorGates", true))
-		    || ((res.name.startsWith("gfx/terobjs/herbs") || otherPickableObjects.contains(res.basename())) && Utils.getprefb("clickNearestObject_Forageables", true))
-		    || (Arrays.stream(Config.critterResPaths).anyMatch(res.name::matches) || res.name.matches(".*(rabbit|bunny)$")) && Utils.getprefb("clickNearestObject_Critters", true)
+		    || (((res.name.startsWith("gfx/terobjs/herbs") && !res.name.contains("standinggrass")) || otherPickableObjects.contains(res.basename())) && Utils.getprefb("clickNearestObject_Forageables", true))
+		    || (Arrays.stream(Config.critterResPaths).anyMatch(res.name::matches)
+		    || res.name.matches(".*(rabbit|bunny)$")) && Utils.getprefb("clickNearestObject_Critters", true)
 		    || (caves.contains(res.name) && Utils.getprefb("clickNearestObject_Caves", false))
 		    || (mines.contains(res.name) && Utils.getprefb("clickNearestObject_MineholesAndLadders", false))) {
 		    if (distFromPlayer < maxDistance && (theObject == null || distFromPlayer < theObject.rc.dist(plc))) {
 			theObject = gob;
-			if (res.name.startsWith("gfx/terobjs/herbs")) FlowerMenu.setNextSelection("Pick"); // ND: Set the flower menu option to "pick" only for these particular ones.
+			if (res.name.startsWith("gfx/terobjs/herbs") || otherPickableObjects.contains(res.basename())) {
+			    shift_click = true; //Cloud: no need to select anything for foragables, shift click works much smoother
+			    //FlowerMenu.setNextSelection("Pick");  ND: Set the flower menu option to "pick" only for these particular ones.
+			}
 		    }
 		}
 	    }
@@ -133,7 +138,14 @@ public class InteractWithNearestObject implements Runnable {
 		    gui.interactWithNearestObjectThread = null;
 		}
 	    } catch (Exception ignored) {}
-	} else {
+	} else if (shift_click){
+	    gui.map.wdgmsg("click", Coord.z, theObject.rc.floor(posres), 3, 1, 0, (int) theObject.id, theObject.rc.floor(posres), 0, -1);
+	    if (gui.interactWithNearestObjectThread != null) {
+		gui.interactWithNearestObjectThread.interrupt();
+		gui.interactWithNearestObjectThread = null;
+	    }
+	}
+	else {
 	    gui.map.wdgmsg("click", Coord.z, theObject.rc.floor(posres), 3, 0, 0, (int) theObject.id, theObject.rc.floor(posres), 0, -1);
 	    if (gui.interactWithNearestObjectThread != null) {
 		gui.interactWithNearestObjectThread.interrupt();
