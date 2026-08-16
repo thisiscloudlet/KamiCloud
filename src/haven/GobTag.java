@@ -32,7 +32,9 @@ public enum GobTag {
     PLAYER, ME, FRIEND, FOE, PARTY, LEADER, IN_COMBAT, COMBAT_TARGET, AGGRO_TARGET,
     KO, DEAD, EMPTY, READY, FULL, LIT, COLD,
     
-    MENU, PICKUP, HIDDEN;
+    MENU, PICKUP, HIDDEN,
+    
+    CAVELOUSE;
     
     private static final String[] AGGRO = {
         "/adder",
@@ -324,6 +326,9 @@ public enum GobTag {
                 tags.add(TROUGH);
             } else if (name.endsWith("/gardenpot")) {
                 tags.add(GARDENPOT);
+            }
+            if (name.endsWith("cavelouse")) {
+                tags.add(CAVELOUSE);
             }
             if(ofType(name, VEHICLES)) {
                 tags.add(VEHICLE);

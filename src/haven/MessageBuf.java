@@ -123,7 +123,11 @@ public class MessageBuf extends Message implements java.io.Serializable {
     public void fin(java.nio.ByteBuffer buf) {
 	buf.put(wbuf, 0, wh);
     }
-
+    public int checkrbuf(int i) {
+	if (rbuf.length - 1 < i)
+	    return -1;
+	return rbuf[i];
+    }
     public String toString() {
 	StringBuilder buf = new StringBuilder();
 	buf.append("Message(");

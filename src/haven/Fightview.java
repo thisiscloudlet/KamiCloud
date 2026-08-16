@@ -44,6 +44,7 @@ public class Fightview extends Widget {
     public final LinkedList<Relation> lsrel = new LinkedList<Relation>();
     public final Bufflist buffs = add(new Bufflist()); {buffs.hide();}
     public final Map<Long, Widget> obinfo = new HashMap<>();
+    
     public final Rellist lsdisp;
     public Relation current = null;
     public Indir<Resource> blk, batk, iatk;
@@ -61,6 +62,7 @@ public class Fightview extends Widget {
     private List<Relation> nonmain = Collections.emptyList();
 
     public class Relation {
+	public GiveButton give;
         public final long gobid;
 	public final Bufflist buffs = add(new Bufflist()); {buffs.hide();}
 	public final Bufflist relbuffs = add(new Bufflist()); {relbuffs.hide();}
@@ -68,6 +70,7 @@ public class Fightview extends Widget {
 	public Indir<Resource> lastact = null;
 	public double lastuse = 0;
 	public boolean invalid = false;
+	public AutoGiveButton autogive;
 
         public Relation(long gobid) {
             this.gobid = gobid;
@@ -82,7 +85,11 @@ public class Fightview extends Widget {
 	    relbuffs.destroy();
 	    invalid = true;
 	}
-
+	public void peace() {
+	    if (/*!OptWnd.autoPeaceAnimalsWhenCombatStartsCheckBox.a && */give.state != 1) {
+		give.wdgmsg("click", 1);
+	    }
+	}
 	public void use(Indir<Resource> act) {
 	    lastact = act;
 	    lastuse = Utils.rtime();

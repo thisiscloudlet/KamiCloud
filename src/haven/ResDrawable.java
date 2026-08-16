@@ -35,7 +35,7 @@ public class ResDrawable extends Drawable implements Sprite.Owner, EquipTarget {
     public final Indir<Resource> res;
     public final Resource rres;
     public final Sprite spr;
-    MessageBuf sdt;
+    public MessageBuf sdt;
     private String resid;
 
     public ResDrawable(Gob gob, Indir<Resource> res, Message sdt, boolean old) {

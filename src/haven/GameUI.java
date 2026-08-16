@@ -27,8 +27,13 @@
 package haven;
 
 import haven.Equipory.SLOTS;
+import haven.automated.CombatDistanceTool;
+import haven.automated.CombatDistancerLite;
+import haven.automated.InteractWithCursorNearest;
+import haven.automated.InteractWithNearestObject;
 import haven.MapFile.Marker;
 import haven.bot.AutoDrink;
+import haven.render.Location;
 import haven.res.ui.locptr.Pointer;
 import haven.rx.BuffToggles;
 import haven.rx.Reactor;
@@ -37,6 +42,11 @@ import me.ender.ClientUtils;
 import me.ender.QuestHelper;
 import me.ender.StatMeterWdg;
 import me.ender.minimap.*;
+import me.ender.alchemy.AlchemyWnd;
+//import me.ender.minimap.Marker;
+import me.ender.minimap.Minesweeper;
+import me.ender.minimap.PMarker;
+import me.ender.minimap.SMarker;
 import me.ender.timer.Timer;
 
 import java.util.*;
@@ -47,6 +57,7 @@ import java.awt.image.WritableRaster;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import static haven.Inventory.*;
 import static haven.ItemFilter.*;
 import haven.render.Location;
 import me.ender.alchemy.AlchemyWnd;
@@ -113,8 +124,23 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Notice.
     public StudyWnd studywnd;
     private Widget questPanel;
     
+    
+    //YOINK FROM HURRICANE
+    public Thread interactWithNearestObjectThread;
+    public Thread enterNearestVehicleThread;
+    public Thread wagonNearestLiftableThread;
+    public Thread keyboundActionThread;
+    public static KeyBinding kb_clickNearestObject  = KeyBinding.get("clickNearestObjectKB",  KeyMatch.forchar('Q', 0));
+    public static KeyBinding kb_clickNearestCursorObject  = KeyBinding.get("clickNearestCursorObjectKB",  KeyMatch.nil);
+    public static KeyBinding kb_clickNearestCursorObjectCombat  = KeyBinding.get("clickNearestCursorObjectCombatKB",  KeyMatch.nil);
+    public static KeyBinding kb_enterNearestVehicle  = KeyBinding.get("enderNearestVehicle",  KeyMatch.forchar('Q', KeyMatch.C));
+    public static KeyBinding kb_wagonNearestLiftable  = KeyBinding.get("wagonNearestLiftable",  KeyMatch.nil);
+    public static KeyBinding kb_autoReaggroTarget = KeyBinding.get("autoReaggroTarget",  KeyMatch.forchar('P', 0));
+    public static KeyBinding kb_autoCombatDistance  = KeyBinding.get("AutoCombatDistanceKB",  KeyMatch.forchar('K', 0));
+    public static KeyBinding kb_instantLogout = KeyBinding.get("instantLogoutKB",  KeyMatch.nil);
     public static boolean verifiedAccount = false;
     public static boolean subscribedAccount = false;
+    
     
     public static abstract class BeltSlot {
 	public final int idx;
@@ -2038,6 +2064,49 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Notice.
 	} else if((ev.c == 27) && (map != null) && !map.hasfocus) {
 	    setfocus(map);
 	    return(true);
+	} else if(kb_clickNearestObject.key().match(ev) && this.fv.current == null) {
+	    if(interactWithNearestObjectThread == null) {
+		interactWithNearestObjectThread = new Thread(new InteractWithNearestObject(this), "InteractWithNearestObject");
+		interactWithNearestObjectThread.start();
+	    } else {
+		interactWithNearestObjectThread.interrupt();
+		interactWithNearestObjectThread = null;
+		interactWithNearestObjectThread = new Thread(new InteractWithNearestObject(this), "InteractWithNearestObject");
+		interactWithNearestObjectThread.start();
+	    }
+	    return (true);
+	} else if(kb_clickNearestCursorObject.key().match(ev) && this.fv.current == null) {
+	    if(interactWithNearestObjectThread == null) {
+		interactWithNearestObjectThread = new Thread(new InteractWithCursorNearest(this), "InteractWithCursorNearest");
+		interactWithNearestObjectThread.start();
+	    } else {
+		interactWithNearestObjectThread.interrupt();
+		interactWithNearestObjectThread = null;
+		interactWithNearestObjectThread = new Thread(new InteractWithCursorNearest(this), "InteractWithCursorNearest");
+		interactWithNearestObjectThread.start();
+	    }
+	    return (true);
+	} else if(kb_clickNearestCursorObjectCombat.key().match(ev)) {
+	    if(interactWithNearestObjectThread == null) {
+		interactWithNearestObjectThread = new Thread(new InteractWithCursorNearest(this), "InteractWithCursorNearest");
+		interactWithNearestObjectThread.start();
+	    } else {
+		interactWithNearestObjectThread.interrupt();
+		interactWithNearestObjectThread = null;
+		interactWithNearestObjectThread = new Thread(new InteractWithCursorNearest(this), "InteractWithCursorNearest");
+		interactWithNearestObjectThread.start();
+	    }
+	    return (true);
+	} else if(kb_autoCombatDistance.key().match(ev)) {
+	    //this.runActionThread(new Thread(new AudioSprite.FuckYouJava(this), "FuckYouJava"));  //used to check sounds in conjunction with AudioSprite's FuckYouJava class!
+	    this.runActionThread(new Thread(new CombatDistancerLite(this), "CombatDistancerLite"));
+	    return(true);
+	} else if (kb_autoReaggroTarget.key().match(ev) && fv.current != null && fv.current.autogive != null) {
+	    this.msg("Trying to toggle reagro!", Color.WHITE);
+	    fv.current.autogive.remoteTrigger();
+	    return (true);
+	} else if (kb_instantLogout.key().match(ev)) {
+	    ui.sess.close();
 	}
 	return(super.globtype(ev));
     }
@@ -2370,7 +2439,9 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Notice.
 	    return(true);
 	}
     }
-    
+    public void msg(String msg, Color color){
+	msg(new UI.SimpleMessage(msg, color, null));
+    }
     {
 	String val = Utils.getpref("belttype", "n");
 	if(val.equals("n")) {
@@ -2432,5 +2503,13 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Notice.
     }
     public Map<String, Console.Command> findcmds() {
 	return(cmdmap);
+    }
+    
+    public void runActionThread(Thread t) {
+	if (this.keyboundActionThread != null && keyboundActionThread.isAlive()) {
+	    keyboundActionThread.interrupt();
+	}
+	this.keyboundActionThread = t;
+	t.start();
     }
 }
