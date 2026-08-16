@@ -21,7 +21,7 @@ public class CustomizeVarMat {
 	if(gob == null) {return null;}
 	AttrMats mats = gob.getattr(AttrMats.class);
 	if(mats == null || mats.res == null || mats.res.isEmpty()) {return null;}
-	
 	return String.format("Materials:\n- %s", mats.res.stream().map(ClientUtils::prettyResName).collect(Collectors.joining("\n- ")));
+	//return String.format("Materials:\n- %s", mats.res.stream().map(ClientUtils::prettyResName).collect(Collectors.joining("\n- ")));
     }
 }
