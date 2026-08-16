@@ -21,9 +21,31 @@ public class AttrMats extends VarMats {
 
     public AttrMats(Gob gob, Pair<Map<Integer, Material>, List<Resource>> data) {
 	super(gob);
-
+	
+	if (gob != null && gob.getres() != null) {
+	    Resource res = gob.getres();
+	    if ((OptWnd.disableHerbalistTablesVarMatsCheckBox.a && res.name.equals("gfx/terobjs/htable"))
+		|| (OptWnd.disableCupboardsVarMatsCheckBox.a && res.name.equals("gfx/terobjs/cupboard"))
+		|| (OptWnd.disableChestsVarMatsCheckBox.a && (res.name.equals("gfx/terobjs/chest") || res.name.equals("gfx/terobjs/stonecasket")))
+		|| (OptWnd.disableMetalCabinetsVarMatsCheckBox.a && res.name.equals("gfx/terobjs/metalcabinet"))
+		|| (OptWnd.disableTrellisesVarMatsCheckBox.a && res.name.equals("gfx/terobjs/plants/trellis"))
+		|| (OptWnd.disableSmokeShedsVarMatsCheckBox.a && res.name.equals("gfx/terobjs/smokeshed"))
+		|| (OptWnd.disableCheeseRacksVarMatsCheckBox.a && res.name.equals("gfx/terobjs/cheeserack"))
+		|| (OptWnd.disableTroughsVarMatsCheckBox.a && res.name.equals("gfx/terobjs/trough"))
+		|| (OptWnd.disableAllObjectsVarMatsCheckBox.a)) {
+		this.mats = new IntMap<Material>();
+		this.res = data.b;
+	    }
+	    else{
+		this.mats = data.a;
+		this.res = data.b;
+	    }
+	}
+	
+	else {
 	this.mats = data.a;
 	this.res = data.b;
+	}
     }
 
     public Material varmat(int id) {

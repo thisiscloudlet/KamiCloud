@@ -43,7 +43,9 @@ public class LoginScreen extends Widget {
     public final String confname;
     private Text error, progress;
     private Button optbtn;
-    private OptWnd opts;
+    
+    private OptWnd opts = new OptWnd(true); // ND: This needs to be created when the login screen is created, to prevent options nullpointers once we log into a character
+    
 
     private WindowX log;
     AccountList accounts;
@@ -55,6 +57,7 @@ public class LoginScreen extends Widget {
     public LoginScreen(String confname) {
 	super(bg.sz());
 	this.confname = confname;
+	AudioConfig.loadSettings();
 	setfocustab(true);
 	add(new Img(bg), Coord.z);
 	optbtn = adda(new Button(UI.scale(100), "Options"), pos("cbl").add(10, -10), 0, 1);
@@ -404,7 +407,11 @@ public class LoginScreen extends Widget {
 	    return;
 	}
 	if(sender == optbtn) {
-	    if(opts == null) {
+	    if(opts == null || opts.parent == null) {
+		if(opts != null) {
+		    opts.reqdestroy();
+		    opts = null;
+		}
 		opts = ui.root.adda(new OptWnd(false) {
 			public void hide() {
 			    /* XXX */

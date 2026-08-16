@@ -66,6 +66,15 @@ public class OptWnd extends WindowX {
     public static CheckBox disableLibertyCapsHighCheckBox;
     public static CheckBox disableDrunkennessDistortionCheckBox;
     public static CheckBox autoPeaceAnimalsWhenCombatStartsCheckBox;
+    public static CheckBox disableHerbalistTablesVarMatsCheckBox;
+    public static CheckBox disableCupboardsVarMatsCheckBox;
+    public static CheckBox disableChestsVarMatsCheckBox;
+    public static CheckBox disableMetalCabinetsVarMatsCheckBox;
+    public static CheckBox disableTrellisesVarMatsCheckBox;
+    public static CheckBox disableSmokeShedsVarMatsCheckBox;
+    public static CheckBox disableCheeseRacksVarMatsCheckBox;
+    public static CheckBox disableTroughsVarMatsCheckBox;
+    public static CheckBox disableAllObjectsVarMatsCheckBox;
     
     public void chpanel(Panel p) {
 	if(current != null)
@@ -463,6 +472,7 @@ public class OptWnd extends WindowX {
     public static HSlider miningSoundVolumeSlider;
     public static HSlider chestTinkVolumeSlider;
     public static HSlider creakSoundVolumeSlider;
+    
     private final int audioSliderWidth = 220;
     public static HSlider themeSongVolumeSlider;
     public class AudioPanel extends Panel {
@@ -2040,6 +2050,62 @@ public class OptWnd extends WindowX {
 		    Utils.setprefb("disableDrunkennessDistortion", val);
 		}
 	    }, prev.pos("bl").adds(0, 10));
+	    
+	    prev = add(new Label("Disable Variable Materials for Objects:"), prev.pos("bl").adds(0, 25));
+	    prev = add(disableHerbalistTablesVarMatsCheckBox = new CheckBox("Herbalist Tables"){
+		{a = (Utils.getprefb("disableHerbalistTablesVarMats", false));}
+		public void changed(boolean val) {
+		    Utils.setprefb("disableHerbalistTablesVarMats", val);
+		}
+	    }, prev.pos("bl").adds(12, 8));
+	    prev = add(disableCupboardsVarMatsCheckBox = new CheckBox("Cupboards"){
+		{a = (Utils.getprefb("disableCupboardsVarMats", false));}
+		public void changed(boolean val) {
+		    Utils.setprefb("disableCupboardsVarMats", val);
+		}
+	    }, prev.pos("bl").adds(0, 4));
+	    prev = add(disableChestsVarMatsCheckBox = new CheckBox("Chests"){
+		{a = (Utils.getprefb("disableChestsVarMats", false));}
+		public void changed(boolean val) {
+		    Utils.setprefb("disableChestsVarMats", val);
+		}
+	    }, prev.pos("bl").adds(0, 4));
+	    prev = add(disableMetalCabinetsVarMatsCheckBox = new CheckBox("Metal Cabinets"){
+		{a = (Utils.getprefb("disableMetalCabinetsVarMats", false));}
+		public void changed(boolean val) {
+		    Utils.setprefb("disableMetalCabinetsVarMats", val);
+		}
+	    }, prev.pos("bl").adds(0, 4));
+	    prev = add(disableTrellisesVarMatsCheckBox = new CheckBox("Trellises"){
+		{a = (Utils.getprefb("disableTrellisesVarMats", false));}
+		public void changed(boolean val) {
+		    Utils.setprefb("disableTrellisesVarMats", val);
+		}
+	    }, prev.pos("bl").adds(0, 4));
+	    prev = add(disableSmokeShedsVarMatsCheckBox = new CheckBox("Smoke Sheds"){
+		{a = (Utils.getprefb("disableSmokeShedsVarMats", false));}
+		public void changed(boolean val) {
+		    Utils.setprefb("disableSmokeShedsVarMats", val);
+		}
+	    }, prev.pos("bl").adds(0, 4));
+	    prev = add(disableCheeseRacksVarMatsCheckBox = new CheckBox("Cheese Racks"){
+		{a = (Utils.getprefb("disableCheeseRacksVarMats", false));}
+		public void changed(boolean val) {
+		    Utils.setprefb("disableCheeseRacksVarMats", val);
+		}
+	    }, prev.pos("bl").adds(0, 4));
+	    prev = add(disableTroughsVarMatsCheckBox = new CheckBox("Food Troughs"){
+		{a = (Utils.getprefb("disableTroughsVarMats", false));}
+		public void changed(boolean val) {
+		    Utils.setprefb("disableTroughsVarMats", val);
+		}
+	    }, prev.pos("bl").adds(0, 4));
+	    prev = add(disableAllObjectsVarMatsCheckBox = new CheckBox("ALL OBJECTS"){
+		{a = (Utils.getprefb("disableAllObjectsVarMats", false));}
+		public void changed(boolean val) {
+		    Utils.setprefb("disableAllObjectsVarMats", val);
+		}
+	    }, prev.pos("bl").adds(0, 4));
 	    
 	    prev = adda(new PointBind(UI.scale(200)), scroll.pos("bl").adds(0, 10).x(scroll.sz.x / 2), 0.5, 0.0);
 	    prev = adda(new OptWnd.PButton(UI.scale(200), "Back", 27, back), prev.pos("bl").adds(0, 10).x(scroll.sz.x / 2), 0.5, 0.0);
