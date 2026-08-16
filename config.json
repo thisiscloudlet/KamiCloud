@@ -1,5 +1,5 @@
 {
-  "version": "16.08.2026 21:04",
+  "version": "16.08.2026 21:08",
   "colors": {
     "mine_support_overlay_virtual": "40be1bff",
     "mine_support_single_overlay": "460ad3bc",
@@ -19,7 +19,15 @@
     "theme": "Small",
     "chat": {
       "logs": true
-    }
+    },
+    "combat": {
+      "always_mark_target": true,
+      "show_info": true
+    },
+    "real_time_curio": true,
+    "show_curio_remaining_meter": true,
+    "show_curio_lph": true,
+    "mmap_view": true
   },
   "display": {
     "flavor": false,
@@ -46,7 +54,9 @@
     },
     "simple_crops": true,
     "gob_hitbox": false,
-    "gob_hitbox_top": false
+    "gob_hitbox_top": false,
+    "gob_info_shorten_content": true,
+    "hide_gobs": true
   },
   "experimental": {
     "ignore_exceptions": true

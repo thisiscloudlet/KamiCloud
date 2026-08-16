@@ -44,11 +44,11 @@ public class Fightview extends Widget {
     public final LinkedList<Relation> lsrel = new LinkedList<Relation>();
     public final Bufflist buffs = add(new Bufflist()); {buffs.hide();}
     public final Map<Long, Widget> obinfo = new HashMap<>();
-    
     public final Rellist lsdisp;
     public Relation current = null;
     public Indir<Resource> blk, batk, iatk;
     public double atkcs, atkct;
+    
     
     @Override
     public void remove() {
@@ -60,48 +60,55 @@ public class Fightview extends Widget {
     public double lastuse = 0;
     public Mainrel curdisp;
     private List<Relation> nonmain = Collections.emptyList();
-
+    // hurri
+    private long autogivegobid = -1;
+    
     public class Relation {
+	// reagro from hurri
+	
 	public GiveButton give;
-        public final long gobid;
+	public AutoGiveButton autogive;
+	public boolean autopeaced = false;
+	
+	//end
+	public final long gobid;
 	public final Bufflist buffs = add(new Bufflist()); {buffs.hide();}
 	public final Bufflist relbuffs = add(new Bufflist()); {relbuffs.hide();}
 	public int gst, ip, oip;
 	public Indir<Resource> lastact = null;
 	public double lastuse = 0;
 	public boolean invalid = false;
-	public AutoGiveButton autogive;
-
-        public Relation(long gobid) {
-            this.gobid = gobid;
-        }
-
-	public void give(int state) {
-	    this.gst = state;
-	}
-
-	public void remove() {
-	    buffs.destroy();
-	    relbuffs.destroy();
-	    invalid = true;
-	}
 	public void peace() {
 	    if (/*!OptWnd.autoPeaceAnimalsWhenCombatStartsCheckBox.a && */give.state != 1) {
 		give.wdgmsg("click", 1);
 	    }
 	}
+	public Relation(long gobid) {
+	    this.gobid = gobid;
+	}
+	
+	public void give(int state) {
+	    this.gst = state;
+	}
+	
+	public void remove() {
+	    buffs.destroy();
+	    relbuffs.destroy();
+	    invalid = true;
+	}
+	
 	public void use(Indir<Resource> act) {
 	    lastact = act;
 	    lastuse = Utils.rtime();
 	}
     }
-
+    
     public class Relbox extends Widget {
 	public final Relation rel;
 	public final Avaview ava;
 	public final GiveButton give;
 	public final Button purs;
-
+	
 	public Relbox(Relation rel) {
 	    super(bg.sz());
 	    this.rel = rel;
@@ -110,13 +117,13 @@ public class Fightview extends Widget {
 	    add(give = new GiveButton(0, UI.scale(15, 15)), UI.scale(5, 4));
 	    adda(purs = new Button(UI.scale(70), "Pursue"), avaf.c.x + avaf.sz.x + UI.scale(5), avaf.c.y + (avaf.sz.y / 2), 0.0, 0.5);
 	}
-
+	
 	public void draw(GOut g) {
 	    g.image(bg, Coord.z);
 	    give.state = rel.gst;
 	    super.draw(g);
 	}
-
+	
 	public void wdgmsg(Widget sender, String msg, Object... args) {
 	    if(sender == ava) {
 		Fightview.this.wdgmsg("click", (int)rel.gobid, args[0]);
@@ -129,49 +136,51 @@ public class Fightview extends Widget {
 	    }
 	}
     }
-
+    
     public class Rellist extends SListBox<Relation, Relbox> {
 	public Rellist(int h) {
 	    super(Coord.of(bg.sz().x, ((bg.sz().y + ymarg) * h) - ymarg), bg.sz().y, ymarg);
 	}
-
+	
 	protected List<Relation> items() {
 	    return(nonmain);
 	}
-
+	
 	protected Relbox makeitem(Relation rel, int idx, Coord sz) {
 	    return(new Relbox(rel));
 	}
-
+	
 	protected void drawslot(GOut g, Relation item, int idx, Area area) {
 	}
-
+	
 	public boolean mousewheel(MouseWheelEvent ev) {
 	    if(!sb.vis())
 		return(false);
 	    return(super.mousewheel(ev));
 	}
-
+	
 	protected boolean unselect(int button) {
 	    return(false);
 	}
     }
-
+    
     public class Mainrel extends Widget {
 	public final Relation rel;
 	public final Avaview ava;
 	public final GiveButton give;
 	public final Button purs;
-
+	
 	public Mainrel(Relation rel) {
 	    this.rel = rel;
 	    Widget avaf = add(Frame.with(ava = new Avaview(Avaview.dasz, rel.gobid, "avacam"), false));
 	    ava.canactivate = true;
 	    adda(give = new GiveButton(0), avaf.pos("ul").subs(5, 0), 1.0, 0.0);
 	    adda(purs = new Button(UI.scale(70), "Pursue"), give.pos("br").adds(0, 5), 1.0, 0.0);
+	    rel.give = give;
+	    adda(rel.autogive = new AutoGiveButton(rel, autogivegobid), give.pos("ul").subs(5, 0), 1.0, 0.0);
 	    lpack();
 	}
-
+	
 	private void lpack() {
 	    int mx = 0, my = 0;
 	    for(Widget ch : children()) {
@@ -182,12 +191,12 @@ public class Fightview extends Widget {
 		ch.c = ch.c.sub(mx, my);
 	    pack();
 	}
-
+	
 	public void draw(GOut g) {
 	    give.state = rel.gst;
 	    super.draw(g);
 	}
-
+	
 	public void wdgmsg(Widget sender, String msg, Object... args) {
 	    if(sender == ava) {
 		Fightview.this.wdgmsg("click", (int)rel.gobid, args[0]);
@@ -200,7 +209,7 @@ public class Fightview extends Widget {
 	    }
 	}
     }
-
+    
     public void use(Indir<Resource> act) {
 	lastact = act;
 	lastuse = Utils.rtime();
@@ -214,11 +223,11 @@ public class Fightview extends Widget {
     }
     
     public Fightview() {
-        super(new Coord(width, (bg.sz().y + ymarg) * height));
+	super(new Coord(width, (bg.sz().y + ymarg) * height));
 	lsdisp = add(new Rellist(height));
 	layout();
     }
-
+    
     public void addchild(Widget child, Object... args) {
 	if(args[0].equals("buff")) {
 	    Widget p;
@@ -233,7 +242,7 @@ public class Fightview extends Widget {
 	    super.addchild(child, args);
 	}
     }
-
+    
     /* XXX? It's a bit ugly that there's no trimming of obinfo, but
      * it's not obvious that one really ever wants it trimmed, and
      * it's really not like it uses a lot of memory. */
@@ -245,7 +254,7 @@ public class Fightview extends Widget {
 	    return(ret);
 	}
     }
-
+    
     public <T extends Widget> T obinfo(long gobid, Class<T> cl, boolean creat) {
 	Widget cnt = obinfo(gobid, creat);
 	if(cnt == null)
@@ -261,12 +270,12 @@ public class Fightview extends Widget {
 	}
 	return(ret);
     }
-
+    
     public static interface ObInfo {
 	public default int prio() {return(1000);}
 	public default Coord2d grav() {return(new Coord2d(0, 1));}
     }
-
+    
     private void layout() {
 	Coord pos = Coord.of(sz.x - UI.scale(10), UI.scale(10));
 	if(curdisp != null) {
@@ -276,13 +285,13 @@ public class Fightview extends Widget {
 	lsdisp.move(pos.add(-lsdisp.sz.x, UI.scale(10)));
 	resize(sz.x, lsdisp.c.y + lsdisp.sz.y);
     }
-
+    
     private void updrel() {
 	List<Relation> nrel = new ArrayList<>(lsrel);
 	nrel.remove(current);
 	nonmain = nrel;
     }
-
+    
     private void setcur(Relation rel) {
 	if(current == rel)
 	    return;
@@ -309,61 +318,68 @@ public class Fightview extends Widget {
 		inf.tick(dt);
 	}
     }
-
+    
     public static class Notfound extends RuntimeException {
-        public final long id;
-
-        public Notfound(long id) {
-            super("No relation for Gob ID " + id + " found");
-            this.id = id;
-        }
+	public final long id;
+	
+	public Notfound(long id) {
+	    super("No relation for Gob ID " + id + " found");
+	    this.id = id;
+	}
     }
-
+    
     private Relation getrel(long gobid) {
-        for(Relation rel : lsrel) {
-            if(rel.gobid == gobid)
-                return(rel);
-        }
-        throw(new Notfound(gobid));
+	for(Relation rel : lsrel) {
+	    if(rel.gobid == gobid)
+		return(rel);
+	}
+	throw(new Notfound(gobid));
     }
-
+    
     public void uimsg(String msg, Object... args) {
-        if(msg == "new") {
+	if(msg == "new") {
 	    if(lsrel.isEmpty()) {combatStateChanged();}
-            Relation rel = new Relation(uint32((Integer)args[0]));
+	    Relation rel = new Relation(uint32((Integer)args[0]));
 	    rel.give(Utils.iv(args[1]));
 	    rel.ip = Utils.iv(args[2]);
 	    rel.oip = Utils.iv(args[3]);
-            lsrel.addFirst(rel);
+	    lsrel.addFirst(rel);
 	    GobCombatInfo.add(rel, ui);
 	    updrel();
 	    if(rel.gst == 0 && CFG.COMBAT_AUTO_PEACE.get()) {
 		wdgmsg("give", (int)rel.gobid, 1);
 	    }
 	    Gob.gobTagsUpdated(ui, rel.gobid);
-            return;
-        } else if(msg == "del") {
-            Relation rel = getrel(Utils.uiv(args[0]));
+	    return;
+	} else if(msg == "del") {
+	    Relation rel = getrel(Utils.uiv(args[0]));
 	    Gob.gobTagsUpdated(ui, rel.gobid);
 	    GobCombatInfo.del(rel, ui);
 	    rel.remove();
-            lsrel.remove(rel);
-	    if(rel == current)
+	    lsrel.remove(rel);
+	    if(rel == current){
 		setcur(null);
+		if (rel.autogive != null && rel.autogive.state == 1 && ui != null && ui.gui != null) {
+		    autogivegobid = rel.gobid;
+		    if (!Utils.aggro(ui.gui, rel.gobid)) {
+			autogivegobid = -1;
+		    }
+		}
+	    }
 	    updrel();
 	    if(lsrel.isEmpty()) {combatStateChanged();}
 	    if(CFG.COMBAT_RE_AGGRO.get()) {Actions.reAggroKritter(ui.gui, rel.gobid);}
-            return;
-        } else if(msg == "upd") {
-            Relation rel = getrel(Utils.uiv(args[0]));
-            int was = rel.gst;
+	    return;
+	} else if(msg == "upd") {
+	    Relation rel = getrel(Utils.uiv(args[0]));
+	    int was = rel.gst;
 	    rel.give(Utils.iv(args[1]));
 	    if(was == 2 && rel.gst == 0 && CFG.COMBAT_AUTO_PEACE.get()) {
 		wdgmsg("give", (int) rel.gobid, 1);
 	    }
 	    rel.ip = Utils.iv(args[2]);
 	    rel.oip = Utils.iv(args[3]);
-            return;
+	    return;
 	} else if(msg == "used") {
 	    use((args[0] == null) ? null : ui.sess.getresv(args[0]));
 	    return;
@@ -371,16 +387,16 @@ public class Fightview extends Widget {
 	    Relation rel = getrel(Utils.uiv(args[0]));
 	    rel.use((args[1] == null) ? null : ui.sess.getresv(args[1]));
 	    return;
-        } else if(msg == "cur") {
-            try {
-                Relation rel = getrel(Utils.uiv(args[0]));
-                lsrel.remove(rel);
-                lsrel.addFirst(rel);
+	} else if(msg == "cur") {
+	    try {
+		Relation rel = getrel(Utils.uiv(args[0]));
+		lsrel.remove(rel);
+		lsrel.addFirst(rel);
 		setcur(rel);
-            } catch(Notfound e) {
+	    } catch(Notfound e) {
 		setcur(null);
 	    }
-            return;
+	    return;
 	} else if(msg == "atkc") {
 	    atkcs = Utils.rtime();
 	    atkct = atkcs + (Utils.dv(args[0]) * 0.06);
@@ -393,7 +409,7 @@ public class Fightview extends Widget {
 	    iatk = ui.sess.getresv(args[1]);
 	    return;
 	}
-        super.uimsg(msg, args);
+	super.uimsg(msg, args);
     }
     
     private void combatStateChanged() {

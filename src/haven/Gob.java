@@ -596,6 +596,20 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	updateState();
 	if (is(GobTag.ME))
 	    botActions();
+	if (getattr(Moving.class) instanceof Following){
+	    Following following = (Following) getattr(Moving.class);
+	    occupiedGobID = following.tgt;
+	    if (occupiedGobID != null) {
+		Gob OccupiedGob = glob.oc.getgob(occupiedGobID);
+		if (OccupiedGob != null) {
+		    synchronized (OccupiedGob.occupants) {
+			if (!OccupiedGob.occupants.contains(this)) {
+			    OccupiedGob.occupants.add(this);
+			}
+		    }
+		}
+	    }
+	}
     }
     
     public void gtick(Render g) {
@@ -957,6 +971,20 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	    }
 	}
 	if(ac == Moving.class) {updateMovingInfo(a, prev);}
+	if(ac == Moving.class && a == null) {
+	    if (occupiedGobID != null){
+		Gob OccupiedGob = glob.oc.getgob(occupiedGobID);
+		if (OccupiedGob != null){
+		    synchronized (OccupiedGob.occupants) {
+			OccupiedGob.occupants.remove(this);
+		    }
+		    occupiedGobID = null;
+		}
+	    }
+	    /*if (isMe != null && isMe)
+		glob.sess.ui.gui.map.gobPathLastClick = null;
+	    gobSpeed = 0;*/
+	}
     }
     
     public void setattr(GAttrib a) {
