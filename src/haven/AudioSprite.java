@@ -61,14 +61,49 @@ public class AudioSprite {
 		return(null);
 	    }
 	};
-
+    //used to check sounds
+    /*public static class FuckYouJava implements Runnable {
+	private final GameUI gui;
+	public static String lastSound = "Not yet";
+	
+	public FuckYouJava(GameUI gui) {
+	    this.gui = gui;
+	}
+	
+	@Override
+	public void run() {
+	    gui.msg(lastSound, Color.WHITE);
+	}
+    }*/
     public static class ClipSprite extends Sprite {
 	public final ActAudio.PosClip clip;
 	private boolean done = false;
 
 	public ClipSprite(Owner owner, Resource res, Audio.Clip clip) {
 	    super(owner, res);
-	    this.clip = new ActAudio.PosClip(new Audio.Monitor(clip.stream()) {
+	    //FuckYouJava.lastSound = res.name;  //used to check sounds with FuckYouJava class
+	    haven.Audio.CS stream = clip.stream();
+	    if (res.name.equals("sfx/borka/clap"))
+		stream = new Audio.VolAdjust(stream, OptWnd.clapSoundVolumeSlider.val/100d);
+	    else if (res.name.equals("sfx/terobjs/quern"))
+		stream = new Audio.VolAdjust(stream, OptWnd.quernSoundVolumeSlider.val/100d);
+	    else if (res.name.equals("sfx/squeak") || res.name.equals("sfx/terobjs/grinder"))
+		stream = new Audio.VolAdjust(stream, OptWnd.squeakSoundVolumeSlider.val/100d);
+	    else if (res.name.equals("sfx/borka/butcher"))
+		stream = new Audio.VolAdjust(stream, OptWnd.butcherSoundVolumeSlider.val/100d);
+	    else if (res.name.equals("sfx/items/hats/quack"))
+		stream = new Audio.VolAdjust(stream, OptWnd.whiteDuckCapSoundVolumeSlider.val/100d);
+	    else if (res.name.equals("sfx/chip"))
+		stream = new Audio.VolAdjust(stream, OptWnd.chippingSoundVolumeSlider.val/100d);
+	    else if (res.name.equals("sfx/items/pickaxe") || res.name.equals("sfx/mineout"))
+		stream = new Audio.VolAdjust(stream, OptWnd.miningSoundVolumeSlider.val/100d);
+	    else if (res.name.equals("sfx/swoosh"))
+		stream = new Audio.VolAdjust(stream, OptWnd.swooshSoundVolumeSlider.val/100d);
+	    else if (res.name.equals("sfx/clank") || res.name.equals("sfx/clonk"))
+		stream = new Audio.VolAdjust(stream, OptWnd.chestTinkVolumeSlider.val/100d);
+	    else if (res.name.equals("sfx/creakdoor"))
+		stream = new Audio.VolAdjust(stream, OptWnd.creakSoundVolumeSlider.val/100d);
+	    this.clip = new ActAudio.PosClip(new Audio.Monitor(stream) {
 		    protected void eof() {
 			super.eof();
 			done = true;

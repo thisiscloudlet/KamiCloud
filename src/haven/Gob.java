@@ -83,6 +83,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     private long eseq = 0;
     private Overlay marker;
     private MarkerSprite.Id markerId;
+    public Long occupiedGobID = null; // ND: The id of the "vehicle" this gob is currently in
     public static final ChangeCallback CHANGED = new ChangeCallback() {
 	@Override
 	public void added(Gob ob) {
@@ -1455,7 +1456,14 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 //		}
 //	    }
 //	}
-	
+	else if (anyOf(GobTag.CAVELOUSE)){
+	    Drawable d = drawable;
+	    if(d.slots != null) {
+		ArrayList<RenderTree.Slot> tmpSlots = new ArrayList<>(d.slots);
+		glob.loader.defer(() -> RUtils.multiremSafe(tmpSlots), null);
+		tag(GobTag.HIDDEN);
+	    }
+	}
 	return false;
     }
     

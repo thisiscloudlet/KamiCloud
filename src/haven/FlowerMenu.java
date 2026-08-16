@@ -53,6 +53,7 @@ public class FlowerMenu extends Widget {
     private boolean forceChosen = false;
     public Petal[] opts;
     private UI.Grab mg, kg;
+    private static String nextAutoSel;
 
     static {
 	GsonBuilder builder = new GsonBuilder();
@@ -85,7 +86,9 @@ public class FlowerMenu extends Widget {
     public static void lastTarget(ITarget target) {
 	FlowerMenu.target = target;
     }
-    
+    public static void setNextSelection(String name) {
+	nextAutoSel = name;
+    }
     @Override
     public void destroy() {
 	target = null;

@@ -1,10 +1,57 @@
 {
-  "version": "03.05.2026 16:02",
+  "version": "16.08.2026 20:55",
   "colors": {
     "mine_support_overlay_virtual": "40be1bff",
     "mine_support_single_overlay": "460ad3bc",
     "mine_support_overlay": "460fe378",
     "damaged_mine_support_overlay": "4bfd2c46"
   },
-  "version_num": 1.0
+  "version_num": 1.0,
+  "general": {
+    "toolbelt0": true,
+    "item_drop_protection": true,
+    "queue_path": true,
+    "decal_shift_pickup": true,
+    "storemap": true,
+    "auto_pick_radius": 173.0
+  },
+  "ui": {
+    "theme": "Small",
+    "chat": {
+      "logs": true
+    }
+  },
+  "display": {
+    "flavor": false,
+    "gob_info": true,
+    "kinsfx": false,
+    "container_status": true,
+    "skip_hide_radar_gobs": true,
+    "progress_coloring": true,
+    "scale": {
+      "walls": 40.0,
+      "cupboards": 50.0
+    },
+    "decals_on_top": true,
+    "gob_paths": {
+      "show": true
+    },
+    "no_mat": {
+      "cupboards": true
+    },
+    "aura": {
+      "rabbit": true,
+      "critters": true,
+      "speed": true
+    },
+    "simple_crops": true,
+    "gob_hitbox": false,
+    "gob_hitbox_top": false
+  },
+  "experimental": {
+    "ignore_exceptions": true
+  },
+  "cam": {
+    "extend_zoom_on_ortho": true
+  }
 }

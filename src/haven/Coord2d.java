@@ -79,7 +79,10 @@ public class Coord2d implements Comparable<Coord2d>, java.io.Serializable {
 	if(c.y > y) return(1);
 	return(0);
     }
-
+    public Coord2d rotate(double a) {
+	return of((((x * Math.cos(a)) - (y * Math.sin(a)))),
+	    (((x * Math.sin(a)) + (y * Math.cos(a)))));
+    }
     public Coord2d add(double X, double Y) {
 	return(of(x + X, y + Y));
     }

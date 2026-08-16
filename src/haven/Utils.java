@@ -94,7 +94,21 @@ public class Utils {
 	    }
 	});
     }
-    
+    public static ArrayList<Gob> getAllGobs(GameUI gui) {
+	ArrayList<Gob> gobs = new ArrayList<>();
+	synchronized (gui.map.glob.oc) {
+	    for (Gob gob : gui.map.glob.oc) {
+		try {
+		    Resource res = gob.getres();
+		    if (res != null) {
+			gobs.add(gob);
+		    }
+		} catch (Loading l) {
+		}
+	    }
+	}
+	return gobs;
+    }
     public static URI uri(String uri) {
 	try {
 	    return(new URI(uri));
