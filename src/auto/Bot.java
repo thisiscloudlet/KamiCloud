@@ -148,4 +148,8 @@ public class Bot implements Defer.Callable<Void> {
 	void call(ITarget target, Bot bot) throws InterruptedException;
     }
     
+    public boolean isCancelled() {
+	return cancelled;
+    }
+    
 }

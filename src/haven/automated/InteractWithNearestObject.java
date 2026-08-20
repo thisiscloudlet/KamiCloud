@@ -1,6 +1,7 @@
 package haven.automated;
 
 
+import auto.BotUtil;
 import haven.*;
 
 import java.util.*;
@@ -69,7 +70,7 @@ public class InteractWithNearestObject implements Runnable {
 	Coord2d plc = player.rc;
 	for (Gob gob : Utils.getAllGobs(gui)) {
 	    double distFromPlayer = gob.rc.dist(plc);
-	    if (gob.id == gui.map.plgob || distFromPlayer >= maxDistance)
+	    if (gob.id == gui.map.plgob || distFromPlayer >= maxDistance || !BotUtil.isOnRadar(gob))
 		continue;
 	    Resource res = null;
 	    try {
@@ -93,7 +94,7 @@ public class InteractWithNearestObject implements Runnable {
 			}
 		    }
 		} catch (NullPointerException ignored) {}
-		boolean isNonVisitorGate = isSmallGate || isReinforcedGate;
+		boolean isNonVisitorGate = isSmallGate; // || isReinforcedGate; // This part is out since ALL reinforced gates are now visitor
 		if ((isNonVisitorGate && Utils.getprefb("clickNearestObject_NonVisitorGates", true))
 		    || (((res.name.startsWith("gfx/terobjs/herbs") && !res.name.contains("standinggrass")) || otherPickableObjects.contains(res.basename())) && Utils.getprefb("clickNearestObject_Forageables", true))
 		    || (Arrays.stream(Config.critterResPaths).anyMatch(res.name::matches)
