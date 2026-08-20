@@ -51,7 +51,7 @@ public class InteractWithCursorNearest implements Runnable {
 				    }
 				}
 			    } catch (NullPointerException ignored) {}
-			    boolean isNonVisitorGate = isSmallGate || isReinforcedGate;
+			    boolean isNonVisitorGate = isSmallGate; //|| isReinforcedGate;
 			    if ((isNonVisitorGate && Utils.getprefb("clickNearestObject_NonVisitorGates", true))
 				|| (((res.name.startsWith("gfx/terobjs/herbs") && !res.name.contains("standinggrass"))
 				|| InteractWithNearestObject.otherPickableObjects.contains(res.basename())) && Utils.getprefb("clickNearestObject_Forageables", true))

@@ -28,7 +28,7 @@ public class Actions {
 	pickup(gui, resIdStartsWith(filter), pickAll);
     }
     
-    static void pickup(GameUI gui, Predicate<Gob> filter, boolean pickAll) {
+   /* static void pickup(GameUI gui, Predicate<Gob> filter, boolean pickAll) {
 	List<ITarget> targets = gui.ui.sess.glob.oc.stream()
 	    .filter(filter)
 	    .filter(gob -> pickAll || PositionHelper.distanceToPlayer(gob) <= CFG.AUTO_PICK_RADIUS.get())
@@ -36,12 +36,63 @@ public class Actions {
 	    .sorted(PositionHelper.byDistanceToPlayer)
 	    .map(GobTarget::new)
 	    .collect(Collectors.toList());
-	
+
 	Bot.process(targets).actions(
 	    ITarget::rclick_shift,
 	    (target, bot) -> Targets.gob(target).waitRemoval()
 	).start(gui.ui);
-    }
+    }*/
+   static void pickup(GameUI gui, Predicate<Gob> filter, boolean pickAll) {
+       List<Gob> initialGobs = gui.ui.sess.glob.oc.stream()
+	   .filter(filter)
+	   .filter(gob -> pickAll || PositionHelper.distanceToPlayer(gob) <= CFG.AUTO_PICK_RADIUS.get())
+	   .filter(gob -> pickAll || BotUtil.isOnRadar(gob))
+	   .collect(Collectors.toList());
+       
+       List<ITarget> targets = initialGobs.stream()
+	   .sorted(PositionHelper.byDistanceToPlayer)
+	   .map(GobTarget::new)
+	   .collect(Collectors.toList());
+       
+       Set<Long> initialGobIds = initialGobs.stream()
+	   .map(gob -> gob.id)
+	   .collect(Collectors.toSet());
+       
+       Bot.process(targets).actions(
+	   new Bot.BotAction() {
+	       private boolean ran = false;
+	       
+	       @Override
+	       public void call(ITarget ignoredTarget, Bot bot) throws InterruptedException {
+		   if (ran) {
+		       return;
+		   }
+		   
+		   ran = true;
+		   
+		   while (!bot.isCancelled()) {
+		       Optional<Gob> nearest = gui.ui.sess.glob.oc.stream()
+			   .filter(gob -> initialGobIds.contains(gob.id))
+			   .filter(filter)
+			   .filter(gob -> pickAll || BotUtil.isOnRadar(gob))
+			   .min(PositionHelper.byDistanceToPlayer);
+		       
+		       if (!nearest.isPresent()) {
+			   break;
+		       }
+		       
+		       GobTarget target = new GobTarget(nearest.get());
+		       
+		       target.rclick_shift();
+		       Targets.gob(target).waitRemoval();
+		       
+		       bot.checkCancelled();
+		   }
+	       }
+	   }
+       ).start(gui.ui);
+   }
+    
     
     public static void pickup(GameUI gui) {
 	pickup(gui, gobIs(GobTag.PICKUP), false);
