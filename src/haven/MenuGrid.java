@@ -218,6 +218,10 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	    pag.scm.wdgmsg("act", (Object[])res.flayer(Resource.action).ad);
 	}
 	public void use(Interaction iact) {
+	    if("paginae/atk/ashoot".equals(res.name)) {
+		GameUI.shootingStance = true;
+	    }
+	    
 	    Object[] eact = new Object[] {pag.scm.ui.modflags()};
 	    if(iact.mc != null) {
 		eact = Utils.extend(eact, iact.mc.floor(OCache.posres));

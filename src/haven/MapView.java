@@ -2425,8 +2425,26 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		ui.gui.pathQueue.click(cc);
 	    }
 	}
-	if(send)
+	if(send) {
+	    GameUI gui = getparent(GameUI.class);
+	    
+	    if((button == 1) && (GameUI.shootingStance || ui.isCursor("gfx/hud/curs/shoot")) && (gui != null) && (gui.fv != null) && gui.fv.cooldownActive()) {
+		final Object[] saved = Arrays.copyOf(args, args.length);
+		ui.message("Shooting too fast, cooldown: " + gui.fv.remainingCooldown(), GameUI.MsgType.INFO);
+		gui.fv.afterCooldown(() -> {
+		    MapView.this.wdgmsg("click", saved);
+		});
+		GameUI.shootingStance = false;
+		return;
+	    }
+	    if (GameUI.shootingStance)
+		GameUI.shootingStance = false;
+	    
+	    
+	    if((gui != null) && (gui.fv != null))
+		gui.fv.clearQueuedCombatAction();
 	    wdgmsg("click", args);
+	}
     }
     
     public void grab(Grabber grab) {

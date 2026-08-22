@@ -48,6 +48,7 @@ public class Fightview extends Widget {
     public Relation current = null;
     public Indir<Resource> blk, batk, iatk;
     public double atkcs, atkct;
+    private Runnable pendingCombatAction = null;
     
     
     @Override
@@ -312,6 +313,12 @@ public class Fightview extends Widget {
     
     public void tick(double dt) {
 	super.tick(dt);
+	if((pendingCombatAction != null) && !cooldownActive()) {
+	    Runnable action = pendingCombatAction;
+	    pendingCombatAction = null;
+	    action.run();
+	}
+	
 	for(Relation rel : lsrel) {
 	    Widget inf = obinfo(rel.gobid, false);
 	    if(inf != null)
@@ -414,5 +421,21 @@ public class Fightview extends Widget {
     
     private void combatStateChanged() {
 	ui.sess.glob.oc.gobAction(Gob::combatUpdated);
+    }
+    
+    public boolean cooldownActive() {
+	return Utils.rtime() < atkct;
+    }
+    
+    public double remainingCooldown(){
+	return atkct - Utils.rtime();
+    }
+    
+    public void afterCooldown(Runnable action) {
+	pendingCombatAction = action;
+    }
+    
+    public void clearQueuedCombatAction(){
+	pendingCombatAction = null;
     }
 }
