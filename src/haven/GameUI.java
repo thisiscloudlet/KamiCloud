@@ -124,6 +124,9 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Notice.
     public StudyWnd studywnd;
     private Widget questPanel;
     
+    //Cloudlet
+    public static boolean shootingStance = false;
+    
     
     //YOINK FROM HURRICANE
     public Thread interactWithNearestObjectThread;
