@@ -2853,4 +2853,5 @@ public class Utils {
 	return false;
     }
     public static final List<String> WALLS_TO_RESIZE = Arrays.asList("gfx/terobjs/arch/palisadeseg", "gfx/terobjs/arch/palisadecp", "gfx/terobjs/arch/brickwallseg", "gfx/terobjs/arch/brickwallcp" );
+    public static final List<String> GATES_TO_RESIZE = Arrays.asList("gfx/terobjs/arch/palisadebiggate", "gfx/terobjs/arch/palisadegate", "gfx/terobjs/arch/brickwallbiggate", "gfx/terobjs/arch/brickwallgate" );
 }

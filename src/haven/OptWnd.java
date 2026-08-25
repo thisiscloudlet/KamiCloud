@@ -463,6 +463,7 @@ public class OptWnd extends WindowX {
     public static HSlider instrumentsSoundVolumeSlider;
     public static HSlider clapSoundVolumeSlider;
     public static HSlider quernSoundVolumeSlider;
+    public static HSlider anvilSoundVolumeSlider;
     public static HSlider swooshSoundVolumeSlider;
     public static HSlider cauldronSoundVolumeSlider;
     public static HSlider squeakSoundVolumeSlider;
@@ -561,6 +562,7 @@ public class OptWnd extends WindowX {
 		}
 		public void changed() {
 		    Utils.setprefi("cauldronSoundVolume", val);
+		    AudioConfig.cauldronSoundVolume = val;
 		}
 	    }, rightColumn.pos("bl").adds(0, 2));
 	    
@@ -571,6 +573,7 @@ public class OptWnd extends WindowX {
 		}
 		public void changed() {
 		    Utils.setprefi("squeakSoundVolume", val);
+		    AudioConfig.squeakSoundVolume = val;
 		}
 	    }, rightColumn.pos("bl").adds(0, 2));
 	    
@@ -581,6 +584,7 @@ public class OptWnd extends WindowX {
 		}
 		public void changed() {
 		    Utils.setprefi("butcherSoundVolume", val);
+		    AudioConfig.butcherSoundVolume = val;
 		}
 	    }, rightColumn.pos("bl").adds(0, 2));
 	    
@@ -591,6 +595,18 @@ public class OptWnd extends WindowX {
 		}
 		public void changed() {
 		    Utils.setprefi("quernSoundVolume", val);
+		    AudioConfig.quernSoundVolume = val;
+		}
+	    }, rightColumn.pos("bl").adds(0, 2));
+	    
+	    rightColumn = add(new Label("Anvil Volume"), rightColumn.pos("bl").adds(0, 15));
+	    rightColumn = add(anvilSoundVolumeSlider = new HSlider(UI.scale(audioSliderWidth), 0, 100, Utils.getprefi("anvilSoundVolume", 75)) {
+		protected void attach(UI ui) {
+		    super.attach(ui);
+		}
+		public void changed() {
+		    Utils.setprefi("anvilSoundVolume", val);
+		    AudioConfig.anvilSoundVolume = val;
 		}
 	    }, rightColumn.pos("bl").adds(0, 2));
 	    
@@ -600,7 +616,8 @@ public class OptWnd extends WindowX {
 		    super.attach(ui);
 		}
 		public void changed() {
-		    Utils.setprefi("quernSoundVolume", val);
+		    Utils.setprefi("swooshSoundVolume", val);
+		    AudioConfig.swooshSoundVolume = val;
 		}
 	    }, rightColumn.pos("bl").adds(0, 2));
 	    
@@ -611,6 +628,7 @@ public class OptWnd extends WindowX {
 		}
 		public void changed() {
 		    Utils.setprefi("instrumentsSoundVolume", val);
+		    AudioConfig.instrumentsSoundVolume = val;
 		}
 	    }, rightColumn.pos("bl").adds(0, 2));
 	    
@@ -621,6 +639,7 @@ public class OptWnd extends WindowX {
 		}
 		public void changed() {
 		    Utils.setprefi("clapSoundVolume", val);
+		    AudioConfig.clapSoundVolume = val;
 		}
 	    }, rightColumn.pos("bl").adds(0, 2));
 	    
@@ -631,6 +650,7 @@ public class OptWnd extends WindowX {
 		}
 		public void changed() {
 		    Utils.setprefi("whiteDuckCapSoundVolume", val);
+		    AudioConfig.whiteDuckCapSoundVolume = val;
 		}
 	    }, rightColumn.pos("bl").adds(0, 2));
 	    
@@ -641,6 +661,7 @@ public class OptWnd extends WindowX {
 		}
 		public void changed() {
 		    Utils.setprefi("chippingSoundVolume", val);
+		    AudioConfig.chippingSoundVolume = val;
 		}
 	    }, rightColumn.pos("bl").adds(0, 2));
 	    
@@ -651,6 +672,7 @@ public class OptWnd extends WindowX {
 		}
 		public void changed() {
 		    Utils.setprefi("miningSoundVolume", val);
+		    AudioConfig.miningSoundVolume = val;
 		}
 	    }, rightColumn.pos("bl").adds(0, 2));
 	    
@@ -661,6 +683,7 @@ public class OptWnd extends WindowX {
 		}
 		public void changed() {
 		    Utils.setprefi("chestTinkVolume", val);
+		    AudioConfig.chestTinkVolume = val;
 		}
 	    }, rightColumn.pos("bl").adds(0, 2));
 	    
@@ -671,6 +694,7 @@ public class OptWnd extends WindowX {
 		}
 		public void changed() {
 		    Utils.setprefi("creakSoundVolume", val);
+		    AudioConfig.creakSoundVolume = val;
 		}
 	    }, rightColumn.pos("bl").adds(0, 2));
 	    
@@ -1448,6 +1472,9 @@ public class OptWnd extends WindowX {
 
 	y += STEP;
 	y = addSlider(CFG.DISPLAY_SCALE_WALLS, 10, 100, "Wall scale: %d%%", "Scale palisade and brick wall vertically, changes are applied on zone reload.", panel, x, y, STEP);
+	
+	y += STEP;
+	y = addSlider(CFG.DISPLAY_SCALE_GATES, 10, 100, "Gate scale: %d%%", "Scale palisade and brick gate vertically, changes are applied on zone reload.", panel, x, y, STEP);
 	
 	y += STEP;
 	y = addSlider(CFG.DISPLAY_SCALE_TREES, 10, 100, "Tree scale: %d%%", "Scale trees, changes are applied on zone reload.", panel, x, y, STEP);

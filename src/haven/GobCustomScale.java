@@ -20,7 +20,9 @@ public class GobCustomScale implements Gob.SetupMod {
 	    update(CFG.DISPLAY_SCALE_CUPBOARDS.get());
 	} else if(Utils.WALLS_TO_RESIZE.contains(res)) {
 	    update(CFG.DISPLAY_SCALE_WALLS.get());
-	} else if(res.startsWith("gfx/terobjs/trees/") && !res.endsWith("log")) {
+	} else if(Utils.GATES_TO_RESIZE.contains(res)) {
+	    update(CFG.DISPLAY_SCALE_GATES.get());
+	}else if(res.startsWith("gfx/terobjs/trees/") && !res.endsWith("log")) {
 	    update2(CFG.DISPLAY_SCALE_TREES.get());
 	} else if(res.startsWith("gfx/terobjs/bushes/")) {
 	    update2(CFG.DISPLAY_SCALE_BUSHES.get());

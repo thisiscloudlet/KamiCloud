@@ -51,6 +51,7 @@ public class CFG<T> {
     public static final CFG<Integer> DISPLAY_SCALE_CUPBOARDS = new CFG<>("display.scale.cupboards", 100);
     public static final CFG<Integer> MINE_SUPPORT_DANGER_THRESHOLD = new CFG<>("display.mine_support_danger_threshold", 50);
     public static final CFG<Integer> DISPLAY_SCALE_WALLS = new CFG<>("display.scale.walls", 100);
+    public static final CFG<Integer> DISPLAY_SCALE_GATES = new CFG<>("display.scale.gates", 100);
     public static final CFG<Boolean> DISPLAY_DECALS_ON_TOP = new CFG<>("display.decals_on_top", false);
     public static final CFG<Boolean> DISPLAY_NO_MAT_CUPBOARDS = new CFG<>("display.no_mat.cupboards", false);
     public static final CFG<Boolean> DISPLAY_AURA_SPEED_BUFF = new CFG<>("display.aura.speed", false);

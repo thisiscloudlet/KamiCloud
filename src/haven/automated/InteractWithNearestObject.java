@@ -45,7 +45,8 @@ public class InteractWithNearestObject implements Runnable {
 	"truffle-white2",
 	"truffle-white3",
 	"gemstone",
-	"boarspear"
+	"boarspear",
+	"antkeynew"
     ));
     
     public final static HashSet<String> mines = new HashSet<String>(Arrays.asList(
@@ -97,8 +98,7 @@ public class InteractWithNearestObject implements Runnable {
 		boolean isNonVisitorGate = isSmallGate; // || isReinforcedGate; // This part is out since ALL reinforced gates are now visitor
 		if ((isNonVisitorGate && Utils.getprefb("clickNearestObject_NonVisitorGates", true))
 		    || (((res.name.startsWith("gfx/terobjs/herbs") && !res.name.contains("standinggrass")) || otherPickableObjects.contains(res.basename())) && Utils.getprefb("clickNearestObject_Forageables", true))
-		    || (Arrays.stream(Config.critterResPaths).anyMatch(res.name::matches)
-		    || res.name.matches(".*(rabbit|bunny)$")) && Utils.getprefb("clickNearestObject_Critters", true)
+		    || ((Arrays.stream(Config.critterResPaths).anyMatch(res.name::matches) || res.name.matches(".*(rabbit|bunny)$")) && Utils.getprefb("clickNearestObject_Critters", true))
 		    || (caves.contains(res.name) && Utils.getprefb("clickNearestObject_Caves", false))
 		    || (mines.contains(res.name) && Utils.getprefb("clickNearestObject_MineholesAndLadders", false))) {
 		    if (distFromPlayer < maxDistance && (theObject == null || distFromPlayer < theObject.rc.dist(plc))) {

@@ -61,27 +61,17 @@ public class AudioSprite {
 		return(null);
 	    }
 	};
-    //used to check sounds
-    /*public static class FuckYouJava implements Runnable {
-	private final GameUI gui;
-	public static String lastSound = "Not yet";
-	
-	public FuckYouJava(GameUI gui) {
-	    this.gui = gui;
-	}
-	
-	@Override
-	public void run() {
-	    gui.msg(lastSound, Color.WHITE);
-	}
-    }*/
+    
     public static class ClipSprite extends Sprite {
 	public final ActAudio.PosClip clip;
 	private boolean done = false;
 
 	public ClipSprite(Owner owner, Resource res, Audio.Clip clip) {
 	    super(owner, res);
-	    //FuckYouJava.lastSound = res.name;  //used to check sounds with FuckYouJava class
+	    
+	    //to find sound names
+	    //System.out.println("Sound played: " + res.name);
+	    
 	    haven.Audio.CS stream = clip.stream();
 	    if (res.name.equals("sfx/borka/clap"))
 		stream = new Audio.VolAdjust(stream, AudioConfig.clapSoundVolume/100d);
@@ -97,6 +87,8 @@ public class AudioSprite {
 		stream = new Audio.VolAdjust(stream, AudioConfig.chippingSoundVolume/100d);
 	    else if (res.name.equals("sfx/items/pickaxe") || res.name.equals("sfx/mineout"))
 		stream = new Audio.VolAdjust(stream, AudioConfig.miningSoundVolume/100d);
+	    else if (res.name.equals("sfx/terobjs/anvil"))
+		stream = new Audio.VolAdjust(stream, AudioConfig.anvilSoundVolume/100d);
 	    else if (res.name.equals("sfx/swoosh"))
 		stream = new Audio.VolAdjust(stream, AudioConfig.swooshSoundVolume/100d);
 	    else if (res.name.equals("sfx/clank") || res.name.equals("sfx/clonk"))
