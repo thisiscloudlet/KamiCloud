@@ -90,6 +90,8 @@ public class Config {
 	"gfx/kritter/chicken/rooster", // ND: This might be pointless?
 	"gfx/kritter/crab/crab",
 	"gfx/kritter/dragonfly/dragonfly",
+	"gfx/kritter/cranefly/cranefly",
+	"gfx/kritter/dumbledore/dumbledore",
 	"gfx/kritter/earthworm/earthworm",
 	"gfx/kritter/firefly/firefly",
 	"gfx/kritter/forestlizard/forestlizard",
