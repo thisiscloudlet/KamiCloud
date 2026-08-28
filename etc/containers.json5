@@ -38,5 +38,9 @@
   "gfx/terobjs/coffer": {
     empty: [1, 2],
     full: [65, 66]
+  },
+  "gfx/terobjs/map/jotunclam": {
+    empty: [1, 2],
+    full: [113, 114]
   }
 }

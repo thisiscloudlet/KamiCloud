@@ -253,6 +253,7 @@ public class ActAudio extends State {
 
 	public Ambience(Resource res, double bvol) {
 	    Audio.Clip clip = res.flayer(Audio.clip, "amb");
+	    //System.out.println("Sound played in ambience: " + res.name);
 	    if(bvol < 0)
 		bvol = clip.bvol();
 	    if (res.name.equals("sfx/terobjs/cauldron"))

@@ -70,7 +70,7 @@ public class AudioSprite {
 	    super(owner, res);
 	    
 	    //to find sound names
-	    //System.out.println("Sound played: " + res.name);
+	    //System.out.println("Sound played in sprite: " + res.name);
 	    
 	    haven.Audio.CS stream = clip.stream();
 	    if (res.name.equals("sfx/borka/clap"))
