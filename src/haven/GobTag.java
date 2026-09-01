@@ -34,7 +34,9 @@ public enum GobTag {
     
     MENU, PICKUP, HIDDEN,
     
-    CAVELOUSE;
+    CAVELOUSE,
+    
+    MIRKWOOD;
     
     private static final String[] AGGRO = {
         "/adder",
@@ -327,9 +329,13 @@ public enum GobTag {
             } else if (name.endsWith("/gardenpot")) {
                 tags.add(GARDENPOT);
             }
-            if (name.endsWith("cavelouse")) {
+            
+            if (name.endsWith("/cavelouse")) {
                 tags.add(CAVELOUSE);
+            } else if (name.endsWith("oldtrunk")) {
+                tags.add(MIRKWOOD);
             }
+            
             if(ofType(name, VEHICLES)) {
                 tags.add(VEHICLE);
             }

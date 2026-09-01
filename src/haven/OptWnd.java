@@ -2012,6 +2012,11 @@ public class OptWnd extends WindowX {
 		
 		public void changed(boolean val) {Utils.setprefb("clickNearestObject_Doors", val);}
 	    }, objectsRight.pos("bl").adds(0, 4)).settip("Go through the nearest Door.");
+	    objectsLeft = cont.add(new CheckBox("Mirkwood Logs") {
+		{a = Utils.getprefb("clickNearestObject_Mirkwoods", false);}
+		
+		public void changed(boolean val) {Utils.setprefb("clickNearestObject_Mirkwoods", val);}
+	    }, objectsLeft.pos("bl").adds(0, 4)).settip("Click nearest mirkwood log.");
 	    y += UI.scale(60);
 	    /* = addbtnImproved(cont, "Hop on Nearest Vehicle", "When this button is pressed, your character will run towards the nearest mountable Vehicle/Animal, and try to mount it." +
 		"\n\n$col[185,185,185]{If the closest vehicle to you is full, or unmountable (like a rowboat on land), it will keep looking for the next closest mountable vehicle.}" +

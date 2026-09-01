@@ -43,8 +43,11 @@ public class Actions {
 	).start(gui.ui);
     }*/
    static void pickup(GameUI gui, Predicate<Gob> filter, boolean pickAll) {
+       if (Utils.getprefb("clickNearestObject_Mirkwoods", false))
+	   filter = filter.or(gob -> gobIs(GobTag.MIRKWOOD).test(gob));
+       Predicate<Gob> combinedFilter = filter;
        List<Gob> initialGobs = gui.ui.sess.glob.oc.stream()
-	   .filter(filter)
+	   .filter(combinedFilter)
 	   .filter(gob -> pickAll || PositionHelper.distanceToPlayer(gob) <= CFG.AUTO_PICK_RADIUS.get())
 	   .filter(gob -> pickAll || BotUtil.isOnRadar(gob))
 	   .collect(Collectors.toList());
@@ -73,7 +76,7 @@ public class Actions {
 		   while (!bot.isCancelled()) {
 		       Optional<Gob> nearest = gui.ui.sess.glob.oc.stream()
 			   .filter(gob -> initialGobIds.contains(gob.id))
-			   .filter(filter)
+			   .filter(combinedFilter)
 			   .filter(gob -> pickAll || BotUtil.isOnRadar(gob))
 			   .min(PositionHelper.byDistanceToPlayer);
 		       
@@ -83,7 +86,10 @@ public class Actions {
 		       
 		       GobTarget target = new GobTarget(nearest.get());
 		       
-		       target.rclick_shift();
+		       if (target.gob.is(GobTag.MIRKWOOD))
+			   target.rclick();
+		       else
+			   target.rclick_shift();
 		       Targets.gob(target).waitRemoval();
 		       
 		       bot.checkCancelled();
